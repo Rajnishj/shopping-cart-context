@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
+import Header from "./components/Header";
+import ErrorFallback from "./ErrorBoundary";
+// import Cart from "./pages/Cart";
+import HomePage from "./pages/HomePage";
+
+const Cart = lazy(() => import("./pages/Cart"));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Header />
+      <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {}}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route exact path="/" element={<HomePage />} />
+            <Route path="/cart" element={<Cart />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
+    </Router>
   );
 }
 
